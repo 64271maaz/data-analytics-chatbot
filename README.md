@@ -55,6 +55,4 @@ Your question  →  Gemini (writes SQL)  →  DuckDB (runs SQL)  →  Answer + t
 - Add conversation memory so follow-up questions can build on previous answers
 - Deploy a live demo link
 
-## Screenshots
 
-*(Add a screenshot or short GIF of the chatbot here once you have one — this is the single most important thing for anyone browsing your repo.)*
