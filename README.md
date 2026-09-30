@@ -1,58 +1,223 @@
 # Chat With Your Data
 
-An AI-powered chatbot that answers plain-English questions about a dataset by automatically writing and running SQL queries.
+An AI-powered data analytics chatbot that lets you upload your own CSV or Excel dataset and ask questions about your data in plain English.
 
-Ask something like *"which product has the highest star rating?"* and it translates your question into SQL, runs it against the data with DuckDB, and returns a real answer — no SQL knowledge required.
+Instead of writing SQL manually, simply ask questions like:
 
-## How it works
+> "Which product has the highest rating?"
 
-```
-Your question  →  Gemini (writes SQL)  →  DuckDB (runs SQL)  →  Answer + table
-```
+The chatbot uses Google Gemini to convert your question into SQL, executes the SQL using DuckDB, and displays the result — no SQL knowledge required.
 
-1. A CSV file is loaded into an in-memory [DuckDB](https://duckdb.org/) database.
-2. When you ask a question, the app sends your question along with the table's schema to Google's Gemini API.
-3. Gemini responds with a SQL query tailored to your question.
-4. That query runs against the data, and the result is displayed in the chat as a table.
-5. You can expand "View generated SQL" on any answer to see exactly what query was run.
+---
 
-## Tech stack
+## How It Works
 
-- **[Streamlit](https://streamlit.io/)** — chat interface
-- **[DuckDB](https://duckdb.org/)** — fast, in-process SQL engine for querying the CSV directly
-- **[Google Gemini API](https://ai.google.dev/)** (`gemini-3.6-flash`) — turns natural language into SQL
-- **pandas** — data loading
+```text
+Upload Dataset
+      ↓
+Ask a Question
+      ↓
+Gemini generates SQL
+      ↓
+DuckDB executes SQL
+      ↓
+Result displayed
 
-## Running it locally
-
-1. Clone this repo and install dependencies:
-   ```bash
-   pip install pandas duckdb streamlit google-genai python-dotenv
-   ```
-2. Get a free API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
-3. Create a `.env` file in the project root:
-   ```
-   GEMINI_API_KEY=your-key-here
-   ```
-4. Run the app:
-   ```bash
-   streamlit run app.py
-   ```
-
+## Process
+Upload your CSV or Excel dataset through the Streamlit interface.
+The dataset is loaded into a pandas DataFrame.
+The DataFrame is registered as an in-memory DuckDB table.
+You ask a question in normal English.
+Google Gemini analyzes the dataset schema and generates a SQL SELECT query.
+DuckDB executes the generated SQL query.
+The result is displayed as a table.
+You can expand View Generated SQL to see the SQL query used.
 ## Features
+📂 Upload your own CSV files
+📊 Upload Excel files (.xlsx and .xls)
+💬 Ask questions using natural language
+🤖 AI-powered SQL generation using Google Gemini
+🦆 Fast SQL execution using DuckDB
+🔒 Read-only SQL validation for safer execution
+📋 View dataset preview
+🔍 View dataset columns and information
+💡 Sample questions for quick testing
+🧾 View generated SQL queries
+⚡ In-memory data processing
+🎨 Clean custom dark-themed interface
+❌ Friendly error messages
+🔄 Automatic retry for temporary Gemini API errors
 
-- Natural language → SQL query generation
-- Live, in-memory SQL execution against the uploaded dataset
-- Sidebar with dataset preview, column list, and one-click sample questions
-- Friendly, human-readable error messages instead of raw API errors
-- Clean, custom-designed dark UI
+Example Questions:
+Which product has the highest rating?
 
-## What I'd improve next
+What is the average price?
 
-- Let users upload their own CSV/Excel file instead of using a fixed dataset
-- Validate generated SQL is read-only before executing it, for safety
-- Auto-generate charts when a question implies a visual (trends, comparisons)
-- Add conversation memory so follow-up questions can build on previous answers
-- Deploy a live demo link
+Show me the top 10 products by rating.
+
+How many products are in each category?
+
+Which category has the highest average price?
+
+What is the total number of records?
+
+Show products with a rating greater than 4.5.
+
+Tech Stack
+Python — Main programming language
+Streamlit — Web interface
+pandas — Data loading and processing
+DuckDB — In-memory SQL query engine
+Google Gemini API — Natural language to SQL generation
+python-dotenv — Environment variable management
+
+Supported Files
+
+The chatbot currently supports:
+
+File Type	Supported
+CSV	✅ Yes
+Excel .xlsx	✅ Yes
+Excel .xls	✅ Yes
+
+Project Structure
+data-analytics-chatbot/
+│
+├── app.py
+├── README.md
+├── .env
+├── .gitignore
+└── venv/
+
+Installation
+1. Clone the Repository
+git clone https://github.com/64271maaz/data-analytics-chatbot.git
+
+Move into the project folder:
+
+cd data-analytics-chatbot
+2. Create a Virtual Environment
+python -m venv venv
+
+Activate the virtual environment on Windows:
+
+venv\Scripts\activate
+3. Install Dependencies
+pip install pandas duckdb streamlit google-genai python-dotenv openpyxl
+Gemini API Key
+
+You need a Google Gemini API key to use the chatbot.
+
+Get your API key from:
+
+Google AI Studio
+
+Create a file named:
+
+.env
+
+in the project root directory.
+Run the Application
+
+Start the Streamlit application with:
+
+streamlit run app.py
+
+The application will open in your browser.
+
+Using the Application
+Step 1 — Upload Dataset
+
+Upload your CSV or Excel file using the file uploader.
+
+Step 2 — Preview Data
+
+The application displays:
+
+File name
+Number of rows
+Number of columns
+Dataset preview
+Available columns
+Step 3 — Ask Questions
+
+Enter a question about your dataset in the chat box.
+
+For example:
+
+What is the average price?
+Step 4 — Get the Answer
+
+Gemini generates the SQL query and DuckDB executes it against your uploaded data.
+
+The result is then displayed in the application.
+
+Step 5 — View SQL
+
+Expand:
+
+View Generated SQL
+
+to see the SQL query generated by Gemini.
+
+Safety
+
+The application validates generated SQL before execution.
+
+Only read-only SELECT queries are allowed.
+
+Commands such as:
+
+DROP
+DELETE
+UPDATE
+INSERT
+ALTER
+CREATE
+TRUNCATE
+ATTACH
+COPY
+INSTALL
+LOAD
+
+are blocked.
+
+This helps prevent the AI-generated query from modifying the dataset or database.
+
+Error Handling
+
+The application provides friendly messages for common problems, including:
+
+Invalid API key
+Temporary Gemini API errors
+Invalid SQL generated by the AI
+Unsupported dataset formats
+Empty datasets
+Query execution errors
+
+Temporary Gemini service errors are automatically retried before showing an error message.
 
 
+
+Current Gemini Model
+
+The application currently uses:
+
+gemini-3.8-flash
+
+The model is used specifically to convert natural-language questions into SQL queries.
+
+Future Improvements
+
+Possible future improvements include:
+
+📈 Automatic chart generation for suitable questions
+🧠 Conversation memory for follow-up questions
+📊 Interactive dashboards
+📉 Automatic data visualization
+📁 Support for additional file formats
+🌐 Deploy the application online
+🔐 Improved security and authentication
+📑 Automatic dataset summaries
+📤 Export query results
+🤖 More advanced AI-powered data analysis
