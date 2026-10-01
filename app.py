@@ -1,4 +1,5 @@
 import os
+import time
 import streamlit as st
 import pandas as pd
 import duckdb
@@ -47,7 +48,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-def ask_question(question, schema_description):
+def ask_question(question, schema_description, max_retries=3):
     prompt = f"""You are a SQL expert. Given this table schema and sample data:
 
 {schema_description}
@@ -56,18 +57,31 @@ Write a single DuckDB SQL query to answer this question: "{question}"
 
 Only output the raw SQL query. No explanation, no markdown formatting, no backticks."""
 
-    response = client.models.generate_content(
-        model="gemini-3.6-flash",
-        contents=prompt
-    )
-    sql = response.text.strip()
+    last_error = None
+    for attempt in range(max_retries):
+        try:
+            response = client.models.generate_content(
+                model="gemini-3.6-flash",
+                contents=prompt
+            )
+            sql = response.text.strip()
 
-    if sql.startswith("```"):
-        sql = sql.strip("`")
-        if sql.lower().startswith("sql"):
-            sql = sql[3:].strip()
+            if sql.startswith("```"):
+                sql = sql.strip("`")
+                if sql.lower().startswith("sql"):
+                    sql = sql[3:].strip()
 
-    return sql
+            return sql
+        except Exception as e:
+            last_error = e
+            msg = str(e)
+            if "UNAVAILABLE" in msg or "503" in msg or "overloaded" in msg.lower():
+                time.sleep(2 * (attempt + 1))  # wait a bit longer each retry
+                continue
+            else:
+                raise  # not a retryable error, fail immediately
+
+    raise last_error
 
 def friendly_error(e):
     msg = str(e)
