@@ -48,7 +48,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-def ask_question(question, schema_description, max_retries=3):
+def ask_question(question, schema_description, max_retries=5):
     prompt = f"""You are a SQL expert. Given this table schema and sample data:
 
 {schema_description}
@@ -76,7 +76,7 @@ Only output the raw SQL query. No explanation, no markdown formatting, no backti
             last_error = e
             msg = str(e)
             if "UNAVAILABLE" in msg or "503" in msg or "overloaded" in msg.lower():
-                time.sleep(2 * (attempt + 1))  # wait a bit longer each retry
+                time.sleep(3 * (attempt + 1))  # wait a bit longer each retry
                 continue
             else:
                 raise  # not a retryable error, fail immediately
