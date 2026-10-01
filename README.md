@@ -61,6 +61,4 @@ Upload a file  →  Your question  →  Gemini (writes SQL)  →  DuckDB (runs S
 - Automatic retry if the AI's generated SQL fails on the first try
 - Deploy a live demo link
 
-## Screenshots
 
-*(Add a screenshot or short GIF of the chatbot here — this is the single most important thing for anyone browsing your repo.)*
