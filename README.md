@@ -4,7 +4,7 @@ An AI-powered chatbot that answers plain-English questions about **any CSV or Ex
 
 Upload a dataset, ask something like *"which product has the highest rating?"*, and it translates your question into SQL, runs it against your data with DuckDB, and returns a real answer — no SQL knowledge required.
 
-##  Live  https://data-analytics-chatbot-fnsczxe3be8dvhwcpa4skq.streamlit.app/
+##  Live  https://data-analytics-chatbot-fnsczxe3be8dvhwcpa4skq.streamlit.app
 
 ## How it works
 
